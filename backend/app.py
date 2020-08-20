@@ -3,11 +3,13 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
+import json
 
 from database.models import db_drop_and_create_all, setup_db, Actor, Movie
 
 def create_app(test_config=None):
   # create and configure the app
+  #print("Seting up app")
   app = Flask(__name__)
   #CORS(app)
   cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -23,8 +25,6 @@ def create_app(test_config=None):
 
 app = create_app()
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
 
 
 '''
@@ -41,9 +41,14 @@ def actors():
   if len(all_actors) == 0:
     abort(404)
 
+  print(all_actors)
+
+  actors_list = [i.format() for i in all_actors]
+
   return jsonify({
     'success': True,
-    'actors': all_actors
+    'actors': len(all_actors),
+    'actors_list': actors_list
   })
 
 
@@ -67,7 +72,8 @@ def get_actor_detail(actor_id):
   return jsonify({
     'success': True,
     'actor': actor.format(),
-    'actors': all_actors
+    'id': actor.id,
+    'actors': len(all_actors)
   })
 
 
@@ -175,15 +181,18 @@ def delete_actor(actor_id):
     the list of movies or appropriate status code indicating reason for failure 
 '''
 @app.route('/movies', methods=["GET"])
-def get_movie():
+def movies():
   all_movies = Movie.query.all()
 
   if len(all_movies) == 0:
     abort(404)
 
+  movies_list = [movie.format() for movie in all_movies]
+
   return jsonify({
     'success': True,
-    'actors': all_movies
+    'movies_list': movies_list,
+    'movies': len(all_movies)
   })
 
 '''
@@ -203,8 +212,9 @@ def get_movie_detail(movie_id):
 
   return jsonify({
     'success': True,
-    'actor': movie.format(),
-    'actors': Movie.query.all()
+    'movie': movie.format(),
+    'movie_id': movie.id,
+    'movies': len(Movie.query.all())
   })
 
 
@@ -233,7 +243,7 @@ def add_movies():
   return jsonify({
     'success': True,
     'created': movie.id,
-    'actors': Movie.query.all()
+    'movies': len(Movie.query.all())
   }) 
 
 '''
@@ -341,3 +351,7 @@ def server_error(error):
     'error': 500,
     'message': 'internal server error'
   }), 500
+
+
+if __name__ == '__main__':
+  app.run(host='0.0.0.0', port=8080, debug=True)

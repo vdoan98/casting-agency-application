@@ -11,12 +11,11 @@ class CastingTestCase(unittest.TestCase):
 
     def setUp(self):
         """Define test variables and initialize app."""
-        self.app = create_app() 
+        self.app = create_app(test_config='test') 
         self.client = self.app.test_client
         self.database_name = "castingagency"
-        self.database_path = "postgres://{}:{}@{}/{}".format('postgres', 'DataPass98','localhost:5432', self.database_name)
-        setup_db(self.app, self.database_path)
-
+        self.database_path = "postgres://{}:{}@{}/{}".format('postgres', 'DataPass98','localhost:5432', 'castingagency')
+        #setup_db(self.app, self.database_path)
 
         self.valid_actor = {
             "name" : "Rita Hayworth",
@@ -90,21 +89,23 @@ class CastingTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Executed after reach test"""
-        self.client().post('/actors', json=self.deleted_actor)
-        self.client().post('/movies', json=self.deleted_movie)
+        # self.client().post('/actors', json=self.deleted_actor)
+        # self.client().post('/movies', json=self.deleted_movie)
+        pass
 
     """
     Test Actor
     """
 
     def test_get_actor(self):
-        res = self.client().get('/actors/1')
+        res = self.client().get('/actors')
         print(res.data)
         data = json.loads(res.data)
+        print(data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(len(data['actors']))
+        self.assertTrue(data['actors'])
 
 
     def test_404_get_actor_does_not_exist(self):
@@ -114,6 +115,15 @@ class CastingTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
+
+    def test_get_actor_detail(self):
+        res = self.client().get('/actors/1')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['actor'], 1)
+        self.assertTrue(data['actors'])
 
     
     def test_delete_actor(self):
@@ -177,7 +187,7 @@ class CastingTestCase(unittest.TestCase):
     Test Movies
     """
     def test_get_movie(self):
-        res = self.client().get('/movies/1')
+        res = self.client().get('/movies')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -204,7 +214,7 @@ class CastingTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertEqual(data['deleted'], 2)
         self.assertEqual(question, None)
-        self.assertTrue(len(data['movies']))
+        self.assertTrue(data['movies'])
 
 
     def test_404_delete_movie(self):
