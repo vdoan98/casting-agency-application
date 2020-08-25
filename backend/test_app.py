@@ -20,8 +20,7 @@ class CastingTestCase(unittest.TestCase):
         self.valid_actor = {
             "name" : "Rita Hayworth",
             "gender" : "female",
-            "age": 24, 
-            "imagelink": "https://www.biography.com/.image/c_fill%2Ccs_srgb%2Cfl_progressive%2Ch_400%2Cq_auto:good%2Cw_620/MTIwNjA4NjMzODM3NjE4NzAw/rita-hayworth-9332633-1-402.jpg",
+            "age": 24,
             "catchphrase": "I have always felt that one of the secrets of real beauty is simplicity."            
         }
 
@@ -33,7 +32,6 @@ class CastingTestCase(unittest.TestCase):
 
         self.valid_movie = {
             "title": "Gilda",
-            "imagelink": "https://upload.wikimedia.org/wikipedia/commons/1/15/Gilda_%281946_one-sheet_poster_-_Style_B%29.jpg",
             "year": '1946'
         }
 
@@ -47,14 +45,12 @@ class CastingTestCase(unittest.TestCase):
             "name": "Paul Newman",
             "gender": "male",
             "age": "35",
-            "imagelink": "https://s3.amazonaws.com/images.hamlethub.com/hh20mediafolder/942/201807/frases-newman_0-1532976269.JPG",
             "catchphrase": "If you dont have enemies, you dont have character."
         }
 
         self.deleted_movie = {
             "id": 2, 
             "title": "How to Marry a Millionaire",
-            "imagelink": "https://www.amanandamouse.com/blogspot/marrymillionaire.jpg",
             "year": '1953'
         }
          
@@ -62,7 +58,6 @@ class CastingTestCase(unittest.TestCase):
             "name": "Lauren Bacall",
             "gender": "female",
             "age": 27,
-            "imagelink": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Lauren_Bacall_1945_%28cropped%29.jpg",
             "catchphrase": "Imagination is the highest kite one can fly."
         }
 
@@ -70,21 +65,17 @@ class CastingTestCase(unittest.TestCase):
             "name": "Lauren Bacall",
             "gender": "female",
             "age": 27,
-            "imagelink": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Lauren_Bacall_1945_%28cropped%29.jpg",
             "catchphrase": "I am not a has-been. I am a will be."
         }
 
         self.edited_movie = {
-            "id": 3,
             "title": "Breakfast at Tiffanys",
-            "imagelink": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Breakfast_at_Tiffany%27s_%281961_poster%29.jpg/1200px-Breakfast_at_Tiffany%27s_%281961_poster%29.jpg",
-            "year": '1960'
+            "year": "1960"
         }
 
         self.restored_movie = {
             "id": 3,
             "title": "Breakfast at Tiffanys",
-            "imagelink": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Breakfast_at_Tiffany%27s_%281961_poster%29.jpg/1200px-Breakfast_at_Tiffany%27s_%281961_poster%29.jpg",
             "year": '1961'
         }
 
@@ -173,13 +164,15 @@ class CastingTestCase(unittest.TestCase):
     def test_create_actor(self):
         res = self.client().post('/actors', json=self.valid_actor)
         data = json.loads(res.data)
-        print(data)
+        #print(data)
         
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(data['actors'])
 
-
+    '''
+    @DONE POST /actors
+    '''
     def test_422_create_new_actor_not_allowed(self):
         res = self.client().post('/actors', json=self.invalid_actor)
         data = json.loads(res.data)
@@ -189,21 +182,16 @@ class CastingTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'unprocessable')
 
 
+    '''
+    @DONE PATCH /actors 
+    '''
     def test_edit_actor(self):
-        res = self.client().patch('/actors/5', self.edited_actor)
+        res = self.client().patch('/actors/5', json=self.edited_actor)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(len(data['actors']))
-
-    
-    def test_404_edit_actor_does_not_exist(self):
-        res = self.client().patch('/actors/20000', self.edited_actor)
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data['success'], False)
+        self.assertTrue(data['actors'])
 
     
     """
@@ -281,16 +269,20 @@ class CastingTestCase(unittest.TestCase):
     def test_create_movie(self):
         res = self.client().post('/movies', json=self.valid_movie)
         data = json.loads(res.data)
-        print(data)
-        
+
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(data['movies'])
 
 
+    '''
+    @DONE POST /movies
+    '''
     def test_422_create_new_movie_not_allowed(self):
         res = self.client().post('/movies', json=self.invalid_movie)
         data = json.loads(res.data)
+        #print(data)
+        #print(res.status_code)
 
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False) 
@@ -298,20 +290,12 @@ class CastingTestCase(unittest.TestCase):
 
 
     def test_edit_movie(self):
-        res = self.client().patch('/movies/3', self.edited_movie)
+        res = self.client().patch('/movies/8', json=self.edited_movie)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(len(data['actors'])) 
-
-    
-    def test_404_edit_movie_does_not_exist(self):
-        res = self.client().patch('/movies/3', self.edited_movie)
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data['success'], False)
+        self.assertTrue(data['movies']) 
 
 
 # Make the tests conveniently executable

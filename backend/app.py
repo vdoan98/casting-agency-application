@@ -97,13 +97,12 @@ def create_app(test_config=None):
       name = data.get('name', '')
       gender = data.get('gender', '')
       age = data.get('age', '')
-      imagelink = data.get('imagelink', '')
       catchphrase = data.get('catchphrase', None)
 
       if (name == '' or gender == '' or age == ''):
         abort(422)
       
-      actor = Actor(name=name, gender=gender, age=age, imagelink=imagelink, catchphrase=catchphrase)
+      actor = Actor(name=name, gender=gender, age=age, catchphrase=catchphrase)
       actor.insert()
     except:
       abort(422)
@@ -117,7 +116,7 @@ def create_app(test_config=None):
 
 
   '''
-  @TODO implement endpoint 
+  @DONE implement endpoint 
     PATCH /actors/<int: id>
       it should require the 'patch:actors' permission 
     return status code 200 and json {"success": True, "actors": actors} where the actors is 
@@ -126,37 +125,38 @@ def create_app(test_config=None):
   @app.route('/actors/<int:actor_id>', methods=["PATCH"])
   #@requires_auth('patch:actors')
   def edit_actor(actor_id):
-    actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
+    try: 
+      actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
+      print(actor.format())
 
-    if actor is None:
-      abort(404)
+      if actor is None:
+        abort(404)
 
-    data = request.get_json()
-    print(data)
-    name = data.get('name', '')
-    gender = data.get('gender', '')
-    age = data.get('age', '')
-    imagelink = data.get('imagelink', '')
-    catchphrase = data.get('catchphrase', None)
+      data = request.get_json()
+      name = data.get('name', '')
+      gender = data.get('gender', '')
+      age = data.get('age', '')
+      catchphrase = data.get('catchphrase', None)
 
-    if (name == '' or gender == '' or age == ''):
+      if (name == '' or gender == '' or age == ''):
+        abort(422)
+      
+
+      actor.name = name
+      actor.gender = gender 
+      actor.age = age 
+      actor.catchphrase = catchphrase 
+      actor.update()
+      print(actor.format())
+
+      return jsonify({
+        'success': True, 
+        'updated': actor.id, 
+        'actors': len(Actor.query.all())
+      })
+    except Exception as e:
+      print(e)
       abort(422)
-    
-
-    actor.name = name
-    actor.gender = gender 
-    actor.age = age 
-    actor.imagelink = urllib.parse.urlencode(imagelink)
-    actor.catchphrase = catchphrase 
-    print(catchphrase)
-
-    actor.update()
-
-    return jsonify({
-      'success': True, 
-      'updated': actor.id, 
-      'actors': Actor.query.all()
-    })
 
 
   '''
@@ -245,27 +245,30 @@ def create_app(test_config=None):
   @app.route('/movies', methods=["POST"])
   #@requires_auth('post:movies')
   def add_movies():
-    data = request.get_json()
-    title = data.get('title', '')
-    imagelink = data.get('imagelink', '')
-    year = data.get('year', '')
+    try: 
+      data = request.get_json()
+      title = data.get('title', '')
+      year = data.get('year', '')
 
-    if (title == '' or year == ''):
+      if (title == '' or year == ''):
+        abort(422)
+      
+      year = year + '/01/01'
+      year_formatted = datetime.strptime(year, "%Y/%m/%d")
+      #print(year_formatted)
+
+      movie = Movie(title=title, year=year_formatted)
+      #print(movie.format())
+      movie.insert()
+
+      return jsonify({
+        'success': True,
+        'created': movie.id,
+        'movies': len(Movie.query.all())
+      })
+    except:
       abort(422)
-    
-    year = year + '/01/01'
-    year_formatted = datetime.strptime(year, "%Y/%m/%d")
-    print(year_formatted)
 
-    movie = Movie(title=title, imagelink=imagelink, year=year_formatted)
-    #print(movie.format())
-    movie.insert()
-
-    return jsonify({
-      'success': True,
-      'created': movie.id,
-      'movies': len(Movie.query.all())
-    }) 
 
   '''
   @TODO implement endpoint 
@@ -277,29 +280,36 @@ def create_app(test_config=None):
   @app.route('/movies/<int:movie_id>', methods=["PATCH"])
   #@requires_auth('patch:movies')
   def edit_movies(movie_id):
-    movie = Actor.query.filter(Actor.id == movie_id).one_or_none()
+    try:
+      movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
 
-    if movie is None:
-      abort(404)
+      print(movie.format())
+      if movie == None:
+        abort(404)
 
-    data = request.get_json()
-    title = data.get('title', '')
-    imagelink = data.get('imagelink', '')
-    year = data.get('year', '')
+      data = request.get_json()
+      title = data.get('title', '')
+      year = data.get('year', '')
 
-    if (title == '' or year == ''):
+      if (title == '' or year == ''):
+        abort(422)
+
+      year = year + '/01/01'
+      year_formatted = datetime.strptime(year, "%Y/%m/%d")
+
+      movie.title = title 
+      movie.year = year_formatted 
+
+      movie.update()
+      print(movie.format())
+
+      return jsonify({
+        'success': True, 
+        'updated': movie.id, 
+        'movies': len(Movie.query.all())
+      })
+    except:
       abort(422)
-
-    movie.title = title 
-    movie.year = year 
-
-    movie.update()
-
-    return jsonify({
-      'success': True, 
-      'updated': movie.id, 
-      'actors': Movie.query.all()
-    })
 
 
   '''

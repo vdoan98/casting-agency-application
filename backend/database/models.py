@@ -47,14 +47,12 @@ class Actor(db.Model):
   name = Column(String)
   gender = Column(String)
   age = Column(Integer)
-  imagelink = Column(String)
   catchphrase = Column(String)
 
-  def __init__(self, name, gender, age, imagelink, catchphrase=""):
+  def __init__(self, name, gender, age, catchphrase=""):
     self.name = name
     self.gender = gender
     self.age = age
-    self.imagelink = imagelink
     self.catchphrase = catchphrase
 
   '''
@@ -99,7 +97,6 @@ class Actor(db.Model):
       'name': self.name,
       'gender': self.gender,
       'age': self.age,
-      'imagelink': self.imagelink,
       'catchphrase': self.catchphrase}
 
 '''
@@ -115,13 +112,11 @@ class Movie(db.Model):
 
   id = Column(Integer, primary_key=True)
   title = Column(String)
-  imagelink = Column(String)
   year = Column(DateTime)
 
 
-  def __init__(self, title, year, imagelink):
+  def __init__(self, title, year):
     self.title = title
-    self.imagelink = imagelink
     self.year = year 
 
 
@@ -159,12 +154,11 @@ class Movie(db.Model):
       movie.update()
   '''
   def update(self):
-        db.session.commit()
+    db.session.commit()
 
   def format(self):
     return {
       'id': self.id,
       'title': self.title,
-      'year': self.year.strftime('%Y'),
-      'imagelink': self.imagelink
+      'year': self.year.strftime('%Y')
     }
