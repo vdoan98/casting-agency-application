@@ -3,6 +3,7 @@ from sqlalchemy import Column, String, Integer, create_engine, DateTime
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import json
+import datetime
 
 #database_path = os.environ['DATABASE_URL']
 database_name = "castingagency"
@@ -46,12 +47,14 @@ class Actor(db.Model):
   name = Column(String)
   gender = Column(String)
   age = Column(Integer)
+  imagelink = Column(String)
   catchphrase = Column(String)
 
-  def __init__(self, name, gender, age, catchphrase=""):
+  def __init__(self, name, gender, age, imagelink, catchphrase=""):
     self.name = name
     self.gender = gender
     self.age = age
+    self.imagelink = imagelink
     self.catchphrase = catchphrase
 
   '''
@@ -96,6 +99,7 @@ class Actor(db.Model):
       'name': self.name,
       'gender': self.gender,
       'age': self.age,
+      'imagelink': self.imagelink,
       'catchphrase': self.catchphrase}
 
 '''
@@ -111,11 +115,15 @@ class Movie(db.Model):
 
   id = Column(Integer, primary_key=True)
   title = Column(String)
-  year = Column(Integer)
+  imagelink = Column(String)
+  year = Column(DateTime)
 
-  def __init__(self, title, year):
+
+  def __init__(self, title, year, imagelink):
     self.title = title
+    self.imagelink = imagelink
     self.year = year 
+
 
   '''
   insert()
@@ -157,5 +165,6 @@ class Movie(db.Model):
     return {
       'id': self.id,
       'title': self.title,
-      'year': self.year
+      'year': self.year.strftime('%Y'),
+      'imagelink': self.imagelink
     }
