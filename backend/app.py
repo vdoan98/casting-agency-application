@@ -8,6 +8,7 @@ from datetime import datetime
 import urllib.parse
 
 from database.models import db_drop_and_create_all, setup_db, Actor, Movie
+from auth.auth import AuthError, requires_auth
 
 def create_app(test_config=None):
   # create and configure the app
@@ -15,6 +16,8 @@ def create_app(test_config=None):
   app = Flask(__name__)
   #CORS(app)
   cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+  
+  db_drop_and_create_all()
 
   @app.route('/')
   def index():
@@ -38,7 +41,8 @@ def create_app(test_config=None):
       the list of actors or appropriate status code indicating reason for failure
   '''
   @app.route('/actors', methods=["GET"])
-  def actors():
+  @requires_auth('get:actors')
+  def actors(jwt):
     all_actors = Actor.query.all()
 
     if len(all_actors) == 0:
@@ -63,8 +67,8 @@ def create_app(test_config=None):
       the list of actors or appropriate status code indicating reason for failure  
   '''
   @app.route('/actors/<int:actor_id>', methods=["GET"])
-  #@requires_auth('get:actors')
-  def get_actor_detail(actor_id):
+  @requires_auth('get:actors')
+  def get_actor_detail(jwt, actor_id):
     actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
 
     if actor is None:
@@ -90,8 +94,8 @@ def create_app(test_config=None):
       for failure
   '''
   @app.route('/actors', methods=["POST"])
-  #@requires_auth('post:actors')
-  def add_actor():
+  @requires_auth('post:actors')
+  def add_actor(jwt):
     try: 
       data = request.get_json()
       name = data.get('name', '')
@@ -123,8 +127,8 @@ def create_app(test_config=None):
       the list of actors or appropriate status code indicating reason for failure
   '''
   @app.route('/actors/<int:actor_id>', methods=["PATCH"])
-  #@requires_auth('patch:actors')
-  def edit_actor(actor_id):
+  @requires_auth('patch:actors')
+  def edit_actor(jwt, actor_id):
     try: 
       actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
       print(actor.format())
@@ -168,8 +172,8 @@ def create_app(test_config=None):
       for failure
   '''
   @app.route('/actors/<int:actor_id>', methods=["DELETE"])
-  #@requires_auth('delete:actors')
-  def delete_actor(actor_id):
+  @requires_auth('delete:actors')
+  def delete_actor(jwt, actor_id):
     actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
 
     if actor is None:
@@ -193,7 +197,8 @@ def create_app(test_config=None):
       the list of movies or appropriate status code indicating reason for failure 
   '''
   @app.route('/movies', methods=["GET"])
-  def movies():
+  @requires_auth('get:movies')
+  def movies(jwt):
     all_movies = Movie.query.all()
 
     if len(all_movies) == 0:
@@ -218,8 +223,8 @@ def create_app(test_config=None):
       the list of movies or appropriate status code indicating reason for failure  
   '''
   @app.route('/movies/<int:movie_id>', methods=["GET"])
-  #@requires_auth('get:movies')
-  def get_movie_detail(movie_id):
+  @requires_auth('get:movies')
+  def get_movie_detail(jwt, movie_id):
     movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
 
     if movie is None:
@@ -243,8 +248,8 @@ def create_app(test_config=None):
       for failure
   '''
   @app.route('/movies', methods=["POST"])
-  #@requires_auth('post:movies')
-  def add_movies():
+  @requires_auth('post:movies')
+  def add_movies(jwt):
     try: 
       data = request.get_json()
       title = data.get('title', '')
@@ -278,8 +283,8 @@ def create_app(test_config=None):
       the list of movies or appropriate status code indicating reason for failure  
   '''
   @app.route('/movies/<int:movie_id>', methods=["PATCH"])
-  #@requires_auth('patch:movies')
-  def edit_movies(movie_id):
+  @requires_auth('patch:movies')
+  def edit_movies(jwt, movie_id):
     try:
       movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
 
@@ -321,8 +326,8 @@ def create_app(test_config=None):
       for failure
   '''
   @app.route('/movies/<int:movie_id>', methods=["DELETE"])
-  #@requires_auth('delete:movies')
-  def delete_movies(movie_id):
+  @requires_auth('delete:movies')
+  def delete_movies(jwt, movie_id):
     movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
 
     if movie is None:
@@ -383,6 +388,17 @@ def create_app(test_config=None):
       'error': 500,
       'message': 'internal server error'
     }), 500
+
+  @app.errorhandler(AuthError)
+  def auth_error(error):
+    error_details = error.error
+    error_status_code = error.status_code 
+
+    return jsonify({
+      "success": False,
+      "error": error_status_code,
+      "message": error_details['description']
+    }), error_status_code
 
   return app
 
