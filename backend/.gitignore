@@ -1,2 +1,2 @@
-auth/jwt_token.py
+auth/auth.py
 auth/jwt_token.py
