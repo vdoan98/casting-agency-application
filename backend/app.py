@@ -48,8 +48,6 @@ def create_app(test_config=None):
     if len(all_actors) == 0:
       abort(404)
 
-    #print(all_actors)
-
     actors_list = [i.format() for i in all_actors]
 
     return jsonify({
