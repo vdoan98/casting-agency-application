@@ -36,50 +36,50 @@ def create_app(test_config=None):
 
   setup_db(app)
   #migrate = Migrate(app, db)
-  movie1 = Movie(title='How to Steal a Million', year=datetime.strptime('1966/01/01', "%Y/%m/%d"))
-  movie2 = Movie(title='How to Marry a Millionaire', year=datetime.strptime('1953/01/01', "%Y/%m/%d"))
-  movie3 = Movie(title='Sunset Boulevard', year=datetime.strptime('1950/01/01', "%Y/%m/%d"))
-  movie4 = Movie(title='The Misfits' , year=datetime.strptime('1961/01/01', "%Y/%m/%d"))
-  movie5 = Movie(title='All About Eve', year=datetime.strptime('1950/01/01', "%Y/%m/%d"))
-  movie6 = Movie(title='Gentlemen Prefer Blondes', year=datetime.strptime('1953/01/01', "%Y/%m/%d"))
-  movie7 = Movie(title='The Seven Year Itch', year=datetime.strptime('1955/01/01', "%Y/%m/%d"))
-  movie8 = Movie(title='Pillow Talk', year=datetime.strptime('1959/01/01', "%Y/%m/%d"))
-  movie9 = Movie(title='High Society', year=datetime.strptime('1956/01/01', "%Y/%m/%d"))
-  movie10 = Movie(title='The King and I', year=datetime.strptime('1956/01/01', "%Y/%m/%d"))
+  # movie1 = Movie(title='How to Steal a Million', year=datetime.strptime('1966/01/01', "%Y/%m/%d"))
+  # movie2 = Movie(title='How to Marry a Millionaire', year=datetime.strptime('1953/01/01', "%Y/%m/%d"))
+  # movie3 = Movie(title='Sunset Boulevard', year=datetime.strptime('1950/01/01', "%Y/%m/%d"))
+  # movie4 = Movie(title='The Misfits' , year=datetime.strptime('1961/01/01', "%Y/%m/%d"))
+  # movie5 = Movie(title='All About Eve', year=datetime.strptime('1950/01/01', "%Y/%m/%d"))
+  # movie6 = Movie(title='Gentlemen Prefer Blondes', year=datetime.strptime('1953/01/01', "%Y/%m/%d"))
+  # movie7 = Movie(title='The Seven Year Itch', year=datetime.strptime('1955/01/01', "%Y/%m/%d"))
+  # movie8 = Movie(title='Pillow Talk', year=datetime.strptime('1959/01/01', "%Y/%m/%d"))
+  # movie9 = Movie(title='High Society', year=datetime.strptime('1956/01/01', "%Y/%m/%d"))
+  # movie10 = Movie(title='The King and I', year=datetime.strptime('1956/01/01', "%Y/%m/%d"))
 
 
-  movie1.insert()
-  movie2.insert()
-  movie3.insert()
-  movie4.insert()
-  movie5.insert()
-  movie6.insert()
-  movie7.insert()
-  movie8.insert()
-  movie9.insert()
-  movie10.insert()
+  # movie1.insert()
+  # movie2.insert()
+  # movie3.insert()
+  # movie4.insert()
+  # movie5.insert()
+  # movie6.insert()
+  # movie7.insert()
+  # movie8.insert()
+  # movie9.insert()
+  # movie10.insert()
 
-  artist1 = Actor(name='Marilyn Monroe', gender='female', age=23, catchphrase='Keep smiling, because life is a beautiful thing and theres so much to smile about.')
-  artist2 = Actor(name='Joan Crawford', gender='female', age=28, catchphrase='')
-  artist3 = Actor(name='Elizabet Taylor', gender='female', age=25, catchphrase='')
-  artist4 = Actor(name='Paul Newman', gender='male', age=35, catchphrase='If you dont have enemies, you dont have character.')
-  artist5 = Actor(name='Grace Kelly', gender='female', age=27, catchphrase='')
-  artist6 = Actor(name='Tommy Noonan', gender='male', age=28, catchphrase='') 
-  artist7 = Actor(name='Elliot Reid', gender='male', age=30, catchphrase='')
-  artist8 = Actor(name='Jane Russell', gender='female', age=27, catchphrase='')
-  artist9 = Actor(name='Charles Coburn', gender='male', age=67, catchphrase='')
-  artist10 = Actor(name='Gloria Swanson', gender='female', age=32, catchphrase='') 
+  # artist1 = Actor(name='Marilyn Monroe', gender='female', age=23, catchphrase='Keep smiling, because life is a beautiful thing and theres so much to smile about.')
+  # artist2 = Actor(name='Joan Crawford', gender='female', age=28, catchphrase='')
+  # artist3 = Actor(name='Elizabet Taylor', gender='female', age=25, catchphrase='')
+  # artist4 = Actor(name='Paul Newman', gender='male', age=35, catchphrase='If you dont have enemies, you dont have character.')
+  # artist5 = Actor(name='Grace Kelly', gender='female', age=27, catchphrase='')
+  # artist6 = Actor(name='Tommy Noonan', gender='male', age=28, catchphrase='') 
+  # artist7 = Actor(name='Elliot Reid', gender='male', age=30, catchphrase='')
+  # artist8 = Actor(name='Jane Russell', gender='female', age=27, catchphrase='')
+  # artist9 = Actor(name='Charles Coburn', gender='male', age=67, catchphrase='')
+  # artist10 = Actor(name='Gloria Swanson', gender='female', age=32, catchphrase='') 
 
-  artist1.insert()
-  artist2.insert()
-  artist3.insert()
-  artist4.insert()
-  artist5.insert()
-  artist6.insert()
-  artist7.insert()
-  artist8.insert()
-  artist9.insert()
-  artist10.insert()
+  # artist1.insert()
+  # artist2.insert()
+  # artist3.insert()
+  # artist4.insert()
+  # artist5.insert()
+  # artist6.insert()
+  # artist7.insert()
+  # artist8.insert()
+  # artist9.insert()
+  # artist10.insert()
 
 
   '''
@@ -180,7 +180,7 @@ def create_app(test_config=None):
   def edit_actor(jwt, actor_id):
     try: 
       actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
-      print(actor.format())
+      #print(actor.format())
 
       if actor is None:
         abort(404)
@@ -200,7 +200,7 @@ def create_app(test_config=None):
       actor.age = age 
       actor.catchphrase = catchphrase 
       actor.update()
-      print(actor.format())
+      #print(actor.format())
 
       return jsonify({
         'success': True, 
@@ -208,7 +208,7 @@ def create_app(test_config=None):
         'actors': len(Actor.query.all())
       })
     except Exception as e:
-      print(e)
+      #print(e)
       abort(422)
 
 
@@ -234,7 +234,7 @@ def create_app(test_config=None):
     return jsonify({
       'success': True,
       'deleted': actor_id,
-      'actors': Actor.query.all()
+      'actors': len(Actor.query.all())
     })
 
 
@@ -337,7 +337,7 @@ def create_app(test_config=None):
     try:
       movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
 
-      print(movie.format())
+      #print(movie.format())
       if movie == None:
         abort(404)
 
@@ -355,7 +355,7 @@ def create_app(test_config=None):
       movie.year = year_formatted 
 
       movie.update()
-      print(movie.format())
+      #print(movie.format())
 
       return jsonify({
         'success': True, 
@@ -388,7 +388,7 @@ def create_app(test_config=None):
     return jsonify({
       'success': True,
       'deleted': movie_id,
-      'movies': Movie.query.all()
+      'movies': len(Movie.query.all())
     })
 
     
