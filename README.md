@@ -2,11 +2,10 @@
 
 The Casting Agency models a company that is responsible for creating movies and managing and assigning actors to those movies. You are an Executive Producer within the company and are creating a system to simplify and streamline your process.
 
-The application must:
+The application will:
 
-1) 
-2) 
-3) 
+1) Allow company employees to create accounts 
+2) Allow company employees to perform actions based on role authorization
 
 ## Models:
 
@@ -35,32 +34,3 @@ Actors with attributes name, age and gender
 - One test for error behavior of each endpoint
 - At least two tests of RBAC for each role
 
-### Development Setup
-
-First, [install Flask](http://flask.pocoo.org/docs/1.0/installation/#install-flask) if you haven't already.
-
-  ```
-  $ cd ~
-  $ sudo pip3 install Flask
-  ```
-
-To start and run the local development server,
-
-1. Initialize and activate a virtualenv:
-  ```
-  $ cd YOUR_PROJECT_DIRECTORY_PATH/
-  $ py -m venv env
-  $ source env/Scripts/activate
-  ```
-
-2. Install the dependencies:
-  ```
-  $ pip install -r requirements.txt
-  ```
-
-3. Run the development server:
-  ```
-  $ export FLASK_APP=myapp
-  $ export FLASK_ENV=development # enables debug mode
-  $ python3 app.py
-  ```
